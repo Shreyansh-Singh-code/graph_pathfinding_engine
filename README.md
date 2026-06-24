@@ -153,7 +153,7 @@ The benchmark executes **100 randomly generated routing queries** on the Delhi r
 The project exports the shortest paths and explored search frontiers for every implemented algorithm, enabling interactive visualization on real OpenStreetMap road networks.
 
 <p align="center">
-<img src="assets/comparison_map.png" width="900">
+<img src="assets/comparision_map.png" width="900">
 </p>
 
 The visualization supports:

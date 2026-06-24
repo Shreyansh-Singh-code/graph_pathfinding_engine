@@ -1,10 +1,11 @@
 # Graph Pathfinding Engine
-
-A high-performance graph routing engine built in **C++17** for computing shortest paths on real-world road networks. The project implements and benchmarks multiple shortest-path algorithms on a **Delhi OpenStreetMap (OSM)** road graph containing over **183,000 nodes** and **499,000 directed edges**, along with visualization tools for route rendering and algorithm comparison.
 ![C++17](https://img.shields.io/badge/C%2B%2B-17-blue)
 ![CMake](https://img.shields.io/badge/Build-CMake-green)
 ![OpenStreetMap](https://img.shields.io/badge/Dataset-OpenStreetMap-orange)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+
+
+A high-performance graph routing engine built in **C++17** for computing shortest paths on real-world road networks. The project implements and benchmarks multiple shortest-path algorithms on a **Delhi OpenStreetMap (OSM)** road graph containing over **183,000 nodes** and **499,000 directed edges**, along with visualization tools for route rendering and algorithm comparison.
 
 ---
 
@@ -35,6 +36,24 @@ The project uses a processed OpenStreetMap road network of Delhi.
 | Directed Edges       |                      499,345 |
 | Graph Representation |               Adjacency List |
 | Edge Weight          | Geographic Distance (meters) |
+
+
+The repository does not include the processed OpenStreetMap dataset because of GitHub file size limits.
+
+Generate the dataset using:
+
+```bash
+python scripts/download_delhi.py
+python scripts/export_graph.py
+```
+
+This will create:
+
+```
+data/raw/delhi.graphml
+data/processed/nodes.csv
+data/processed/edges.csv
+```
 
 ---
 

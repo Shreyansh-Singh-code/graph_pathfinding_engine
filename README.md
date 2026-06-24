@@ -1,101 +1,99 @@
 # Graph Pathfinding Engine
-![C++17](https://img.shields.io/badge/C%2B%2B-17-blue)
-![CMake](https://img.shields.io/badge/Build-CMake-green)
-![OpenStreetMap](https://img.shields.io/badge/Dataset-OpenStreetMap-orange)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 
+<p align="center">
 
-A high-performance graph routing engine built in **C++17** for computing shortest paths on real-world road networks. The project implements and benchmarks multiple shortest-path algorithms on a **Delhi OpenStreetMap (OSM)** road graph containing over **183,000 nodes** and **499,000 directed edges**, along with visualization tools for route rendering and algorithm comparison.
+![C++](https://img.shields.io/badge/C%2B%2B-17-blue?style=for-the-badge)
+![CMake](https://img.shields.io/badge/Build-CMake-green?style=for-the-badge)
+![Algorithms](https://img.shields.io/badge/Algorithms-Graph%20Search-orange?style=for-the-badge)
+![OpenStreetMap](https://img.shields.io/badge/Dataset-OpenStreetMap-red?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+
+</p>
+
+A high-performance **C++17 routing engine** implementing classical and heuristic shortest-path algorithms on a real-world **OpenStreetMap (OSM)** road network. The project benchmarks multiple graph search algorithms, analyzes their performance trade-offs, and provides interactive visualization of computed routes and search frontiers.
 
 ---
 
-## Features
+# Features
 
-* Built a graph representation from real OpenStreetMap road network data.
-* Implemented multiple shortest-path algorithms:
+* Road network built from **OpenStreetMap (OSM)** data.
+* Efficient adjacency-list graph representation.
+* Implements multiple shortest-path algorithms:
 
   * Dijkstra's Algorithm
   * A* Search
   * Bidirectional Dijkstra
-  * Weighted A* Search
-* Haversine-based heuristic for geospatial routing.
-* Automated benchmark framework for performance evaluation.
+  * Weighted A*
+* Haversine-distance heuristic for geospatial routing.
+* Automated benchmarking framework over random routing queries.
 * Interactive route visualization using Folium.
-* Search frontier export for algorithm visualization.
-* Benchmark result generation and plotting with Python.
+* Search frontier export for algorithm comparison.
+* Python utilities for benchmark analysis and visualization.
 
 ---
 
-## Dataset
+# Project Overview
 
-The project uses a processed OpenStreetMap road network of Delhi.
+Unlike toy graph implementations, this project performs routing on a **real road network** containing nearly **200,000 intersections** and **half a million road connections**. It demonstrates the practical differences between uninformed and heuristic graph search algorithms by comparing execution time, explored search space, and path quality.
 
-| Metric               |                        Value |
-| -------------------- | ---------------------------: |
-| Nodes                |                      183,747 |
-| Directed Edges       |                      499,345 |
-| Graph Representation |               Adjacency List |
-| Edge Weight          | Geographic Distance (meters) |
+---
 
+# Dataset
 
-The repository does not include the processed OpenStreetMap dataset because of GitHub file size limits.
+The road network is generated from **Delhi OpenStreetMap** data.
 
-Generate the dataset using:
+| Property             |                             Value |
+| -------------------- | --------------------------------: |
+| Nodes                |                       **183,747** |
+| Directed Edges       |                       **499,345** |
+| Edge Weight          | Great-circle distance (Haversine) |
+| Graph Representation |                    Adjacency List |
 
-```bash
-python scripts/download_delhi.py
-python scripts/export_graph.py
-```
+> **Note:** The processed dataset is intentionally excluded from the repository due to GitHub's file size limits. It can be regenerated using the provided preprocessing scripts.
 
-This will create:
+---
 
-```
-data/raw/delhi.graphml
-data/processed/nodes.csv
-data/processed/edges.csv
+# Implemented Algorithms
+
+| Algorithm              |   Optimal   | Heuristic |
+| ---------------------- | :---------: | :-------: |
+| Dijkstra               |      ✅      |     ❌     |
+| A*                     |      ✅      |     ✅     |
+| Bidirectional Dijkstra |      ✅      |     ❌     |
+| Weighted A*            | Approximate |     ✅     |
+
+---
+
+# Architecture
+
+```text
+                 OpenStreetMap Data
+                         │
+                         ▼
+                Graph Preprocessing
+                         │
+                         ▼
+              Adjacency List Graph
+                         │
+        ┌────────────────┼────────────────┐
+        ▼                ▼                ▼
+    Dijkstra           A* Search    Bidirectional
+                         │
+                         ▼
+                  Weighted A*
+                         │
+                         ▼
+              Benchmark Framework
+                         │
+                         ▼
+     CSV Results • Performance Plots • Route Visualization
 ```
 
 ---
 
-## Algorithms Implemented
+# Performance Benchmark
 
-### Dijkstra
-
-* Guarantees optimal shortest path.
-* Explores the graph uniformly.
-* Baseline algorithm for comparison.
-
-### A*
-
-* Uses Haversine distance as an admissible heuristic.
-* Significantly reduces explored nodes while preserving optimality.
-
-### Bidirectional Dijkstra
-
-* Simultaneously searches from source and destination.
-* Reduces search space by meeting in the middle.
-
-### Weighted A*
-
-Uses
-
-[
-f(n)=g(n)+\epsilon h(n)
-]
-
-where **ε > 1** trades optimality for speed.
-
-Implemented values:
-
-* ε = 1.2
-* ε = 1.5
-* ε = 2.0
-
----
-
-# Benchmark Results
-
-Benchmarks were performed over **100 randomly generated routing queries**.
+The benchmark executes **100 randomly generated routing queries** on the Delhi road network.
 
 | Algorithm              | Avg Time (ms) | Avg Expanded Nodes | Avg Distance (m) |
 | ---------------------- | ------------: | -----------------: | ---------------: |
@@ -108,72 +106,99 @@ Benchmarks were performed over **100 randomly generated routing queries**.
 
 ---
 
-## Performance Highlights
+# Key Insights
 
-* **A*** reduced explored nodes by **73.6%** compared to Dijkstra while preserving optimal shortest paths.
-* **Weighted A* (ε = 1.2)** achieved approximately **5.1× speedup** over Dijkstra with only **1.03% path inflation**.
-* **Weighted A* (ε = 2.0)** achieved approximately **12× speedup**, demonstrating the trade-off between execution time and solution optimality.
+* **A*** reduced explored nodes by **73.6%** compared to classical Dijkstra while preserving optimal shortest paths.
+* **Weighted A* (ε = 1.2)** achieved approximately **5× faster execution** with only **1.03% path inflation**.
+* **Weighted A* (ε = 2.0)** achieved approximately **12× speedup**, demonstrating the trade-off between execution time and route optimality.
 
 ---
 
-## Project Structure
+# Benchmark Visualizations
 
-```
+## Runtime Comparison
+
+<p align="center">
+<img src="assets/runtime_comparison.png" width="700">
+</p>
+
+---
+
+## Search Space Comparison
+
+<p align="center">
+<img src="assets/expanded_nodes.png" width="700">
+</p>
+
+---
+
+## Speedup over Dijkstra
+
+<p align="center">
+<img src="assets/speedup.png" width="700">
+</p>
+
+---
+
+## Path Quality Trade-off
+
+<p align="center">
+<img src="assets/path_quality.png" width="700">
+</p>
+
+---
+
+# Interactive Route Visualization
+
+The project exports the shortest paths and explored search frontiers for every implemented algorithm, enabling interactive visualization on real OpenStreetMap road networks.
+
+<p align="center">
+<img src="assets/comparison_map.png" width="900">
+</p>
+
+The visualization supports:
+
+* Comparison of shortest paths.
+* Search frontier inspection.
+* Source and destination markers.
+* Interactive zoom and pan.
+
+---
+
+# Repository Structure
+
+```text
 graph-pathfinding-engine/
 
 ├── include/
-│   ├── graph.hpp
-│   ├── graph_loader.hpp
-│   ├── dijkstra.hpp
-│   ├── astar.hpp
-│   ├── bidirectional.hpp
-│   ├── weighted_astar.hpp
-│   ├── export.hpp
-│   └── haversine.hpp
-│
 ├── src/
-│   ├── graph.cpp
-│   ├── graph_loader.cpp
-│   ├── dijkstra.cpp
-│   ├── astar.cpp
-│   ├── bidirectional.cpp
-│   ├── weighted_astar.cpp
-│   ├── export.cpp
-│   ├── haversine.cpp
-│   └── main.cpp
-│
-├── benchmarks/
-│   ├── benchmark.cpp
-│   └── benchmark_utils.hpp
-│
+├── benchmark/
 ├── scripts/
-│   ├── benchmark.py
-│   ├── comparison.py
-│   └── visualize_route.py
-│
+├── assets/
 ├── data/
-│
+│   ├── raw/
+│   └── processed/
 ├── results/
-│
-└── CMakeLists.txt
+├── CMakeLists.txt
+├── README.md
+└── LICENSE
 ```
 
 ---
 
-## Building
+# Building
 
 ```bash
 mkdir build
 cd build
 
 cmake -G "MinGW Makefiles" ..
-
 mingw32-make
 ```
 
 ---
 
-## Running
+# Running
 
 ### Generate Route
 
@@ -181,25 +206,20 @@ mingw32-make
 ./pathfinder
 ```
 
-This exports:
+Exports:
 
 * route CSVs
-* frontier CSVs
-
-to the `results/` directory.
+* search frontier CSVs
 
 ---
 
-### Benchmark Algorithms
+### Benchmark
 
 ```bash
 ./benchmark
 ```
 
-Outputs:
-
-* Benchmark statistics
-* `benchmark_results.csv`
+Outputs benchmark statistics and generates CSV summaries.
 
 ---
 
@@ -211,45 +231,32 @@ cd scripts
 python benchmark.py
 ```
 
-Generates:
-
-* runtime comparison
-* expanded node comparison
-* speedup comparison
-* path inflation comparison
-
 ---
 
-### Visualize Routes
+### Interactive Visualization
 
 ```bash
 python comparison.py
 ```
 
-Generates:
-
-```
-results/comparison.html
-```
-
-which provides an interactive visualization of all implemented algorithms and their search frontiers.
+Produces an interactive HTML visualization inside the `results/` directory.
 
 ---
 
-## Technologies Used
+# Technologies Used
 
-* C++17
-* CMake
-* STL
-* Python
-* Pandas
-* Matplotlib
-* Folium
-* OpenStreetMap
+* **C++17**
+* **CMake**
+* **STL**
+* **Python**
+* **Pandas**
+* **Matplotlib**
+* **Folium**
+* **OpenStreetMap**
 
 ---
 
-## Future Work
+# Future Enhancements
 
 * Search frontier animation
 * Interactive algorithm selector
@@ -261,6 +268,13 @@ which provides an interactive visualization of all implemented algorithms and th
 
 ---
 
-## License
+# Acknowledgements
 
-This project is released under the MIT License.
+* OpenStreetMap contributors for the road network data.
+* Folium and Matplotlib for visualization support.
+
+---
+
+# License
+
+This project is licensed under the **MIT License**.
